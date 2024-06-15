@@ -6,7 +6,7 @@ import google.generativeai as genai
 URL = f'https://api.telegram.org/bot{os.getenv("TELEGRAM_SECRET_KEY")}/'
 
 def getUpdates(offset=None):
-    return requests.get(URL+"getUpdates", params={ "timeout": 3000, "offset": offset}).json()
+    return requests.get(URL+"getUpdates", params={ "timeout": 100, "offset": offset}).json()
 
 def handleUpdates(updates):
     for update in updates.get("result"):
