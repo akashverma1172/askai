@@ -80,6 +80,6 @@ jobs:
           enable-oryx-build: true
 
       - name: Run python script
-      run: |
-        python run.py
+        run: |
+          python run.py
           
