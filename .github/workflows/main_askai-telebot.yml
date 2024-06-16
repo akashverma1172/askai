@@ -25,14 +25,34 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+        
+      - name: Download miniconda installer
+        run: wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 
-      - name: Create and start virtual environment
+      - name: Install miniconda
         run: |
-          python -m venv venv
-          source venv/bin/activate
+          bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda
+          echo "$HOME/miniconda/bin" >> $GITHUB_PATH
+
+      - name: Initialize Conda
+        run: |
+          source $HOME/miniconda/etc/profile.d/conda.sh
+          conda init bash
+          conda config --set always_yes yes --set changeps1 no
+          conda update -q conda
+
+      - name: Create and activate Conda environment
+        run: |
+          source $HOME/miniconda/etc/profile.d/conda.sh
+          conda create -n myenv python=3.9
+          conda activate myenv
+          echo "conda activate myenv" >> $BASH_ENV
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          source $HOME/miniconda/etc/profile.d/conda.sh
+          conda activate myenv
+          pip install -r requirements.txt
 
       # Optional: Add step to run tests here
 
@@ -79,7 +99,8 @@ jobs:
           scm-do-build-during-deployment: true
           enable-oryx-build: true
 
-      - name: Run python script
+      - name: Run Python script
         run: |
+          source $HOME/miniconda/etc/profile.d/conda.sh
+          conda activate myenv
           python run.py
-          
