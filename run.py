@@ -1,7 +1,7 @@
 import requests
 import os
 import time
-import google.generativeai as genai
+from google import generativeai
 
 URL = f'https://api.telegram.org/bot{os.getenv("TELEGRAM_SECRET_KEY")}/'
 
@@ -13,8 +13,8 @@ def handleUpdates(updates):
         if "message" in update and "text" in update["message"]:
             chatId = update["message"]["chat"]["id"]
             text = update['message']['text']
-            genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-            model = genai.GenerativeModel('gemini-1.5-flash-latest')
+            generativeai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+            model = generativeai.GenerativeModel('gemini-1.5-flash-latest')
             response = model.generate_content(text)
             requests.post(URL+"sendMessage", data={"chat_id": chatId, "text": response.text, "parse_mode": "Markdown"})
 
